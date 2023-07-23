@@ -20,7 +20,7 @@ const Register = () => {
       senha: senhaReg
     }).then((response) => {
       console.log(response);
-      // Lógica para lidar com a resposta de sucesso do login
+      // Lógica para lidar com a resposta de sucesso no cadastro de usuário
     }).catch((error) => {
       if (error.response) {
         setErrorMessage(error.response.data.message);

@@ -24,4 +24,13 @@ module.exports = app => {
         Produto.criarGrupo(produto,res)
 
     })
+
+    app.get('/buscarGrupos', (req, res) => {
+
+        const descricaoGrupo = req.body
+        console.log(descricaoGrupo)
+
+        Produto.buscarGrupos(descricaoGrupo, res)
+
+    })
 }

@@ -60,8 +60,7 @@ div .Big {
   transition: 0.25s;
   -webkit-box-shadow: 0 0 0 30px #F4EEE0 inset;
   -webkit-text-fill-color: #4F4557;
-  -webkit-background-color: #F4EEE0
-  
+  -webkit-background-color: #F4EEE0;
 }
 
 div input:-webkit-autofill:active{

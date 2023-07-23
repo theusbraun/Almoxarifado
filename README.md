@@ -1,1 +1,1 @@
-Sistema de login com Node, React e MySQL.
+Sistema de Almoxarifado com Node, React e MySQL.

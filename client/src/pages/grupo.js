@@ -12,7 +12,7 @@ const Register = () => {
       descricao: descricaoReg,
     }).then((response) => {
       console.log(response);
-      // Lógica para lidar com a resposta de sucesso do login
+      // Lógica para lidar com a resposta de sucesso no cadastro de produto
     }).catch((error) => {
       if (error.response) {
         setErrorMessage(error.response.data.message);
