@@ -8,10 +8,11 @@ class Produto {
 
     buscarGrupos(descricao, res) {
         const searchTerm = `%${descricao}%`; // Adiciona os '%' para fazer uma pesquisa parcial
+        console.log(descricao)
       
         const sql = "SELECT * FROM a_grupo WHERE UPPER(descricao) LIKE ?";
         const values = [searchTerm.toUpperCase()]; // Converte o termo de pesquisa para maiúsculas
-      
+        console.log(values)
         // Executa a consulta no banco de dados para obter os grupos correspondentes
         conexao.query(sql, values, (error, resultados) => {
           if (error) {

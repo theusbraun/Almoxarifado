@@ -1,6 +1,8 @@
 const Produto = require('../models/Produtos')
 
 module.exports = app => {
+    const Usuario = require('../models/Usuarios');
+
     app.get('/produto', (req, res) => {
 
         Produto.escolasUsuario(req, res)
@@ -25,7 +27,7 @@ module.exports = app => {
 
     })
 
-    app.get('/buscarGrupos', (req, res) => {
+    app.get('/buscarGrupos/:descricao', (req, res) => {
 
         const descricaoGrupo = req.body
         console.log(descricaoGrupo)

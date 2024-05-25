@@ -1,38 +1,44 @@
-const express = require('express')
-const consign = require('consign')
-const cors = require("cors")
- 
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
+const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const consign = require('consign');
 
 module.exports = () => {
- const app = express()
- 
- app.use(express.json())
- app.use(cors({
-   origin: ["http://localhost:3000"],
-   methods: ["GET", "POST"],
-   credentials: true
- }))
-app.use(cookieParser())
-app.use(bodyParser.urlencoded({ extended: true}))
 
-app.use(
-  session({
-    key: "userId",
-    secret: "subiscribe",
+  const app = express();
+
+  // Configurações de middlewares
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+  app.use(cookieParser());
+  app.use(cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST"],
+    credentials: true
+  }));
+
+  // Configuração de sessão
+  app.use(session({
+    secret: 'suaChaveSecreta',
     resave: false,
-    saveUninitialized: false,
-    cookie: {
-      expires: 60 * 60 * 24,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  }));
+
+  //Verificação de autenticação
+  app.use((req, res, next) => {
+    if (!req.session.user) {
+      return res.redirect('/login'); // Redireciona para a página de login
     }
-  })
-)
- 
- consign()
-   .include('controllers')
-   .into(app)
- 
- return app
-}
+    next();
+  });
+
+  // Inclusão dos controllers
+  consign()
+    .include('controllers')
+    .into(app);
+
+  return app;
+};

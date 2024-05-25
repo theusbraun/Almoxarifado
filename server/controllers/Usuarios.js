@@ -31,7 +31,7 @@ module.exports = app => {
 
         const user = req.body
 
-        Usuario.trocarSenha(login, res)
+        Usuario.trocarSenha(user, res)
     })
 
     /*app.patch('/usuarios/:id', (req, res) => {

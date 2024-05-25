@@ -1,34 +1,52 @@
 import React, { useState, useEffect } from "react";
+import { Redirect } from "react-router-dom"; // Importa o componente Redirect
 import './style.css';
 import Axios from 'axios';
 
-const Register = () => {
+const Produto = () => {
+  const [authenticated, setAuthenticated] = useState(false); // Estado para verificar se o usuário está autenticado
   const [descricaoReg, setdescricaoReg] = useState('');
   const [descricaoDetalhadaReg, setdescricaoDetalhadaReg] = useState('');
   const [volumeReg, setvolumeReg] = useState('');
   const [idGrupoReg, setidGrupoReg] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [grupoOptions, setGrupoOptions] = useState([]); // Para armazenar as opções de grupo vindas do backend
+  const [grupoOptions, setGrupoOptions] = useState([]);
+
+  useEffect(() => {
+    // Simulação de uma função de verificação de autenticação assíncrona
+    const checkAuthentication = async () => {
+      try {
+        const response = await Axios.get("http://localhost:3001/checkAuthentication");
+        if (response.data.authenticated) {
+          setAuthenticated(true); // Define o estado de autenticação como verdadeiro se o usuário estiver autenticado
+        }
+      } catch (error) {
+        console.error("Erro ao verificar autenticação:", error);
+      }
+    };
+
+    checkAuthentication(); // Chama a função de verificação de autenticação ao montar o componente
+  }, []);
 
   useEffect(() => {
     // Função para fazer a busca dos grupos no banco de dados
     const searchGrupos = async () => {
       try {
         const response = await Axios.get(`http://localhost:3001/buscarGrupos?descricao=${idGrupoReg}`);
-        setGrupoOptions(response.data); // Armazena as opções de grupo vindas do backend
+        setGrupoOptions(response.data);
       } catch (error) {
         console.error("Erro ao buscar grupos:", error);
       }
     };
 
-    // Realiza a busca apenas se a descrição do grupo tiver pelo menos 3 caracteres (pode ajustar esse valor)
     if (idGrupoReg.length >= 3) {
       searchGrupos();
     }
   }, [idGrupoReg]);
 
   const handleGrupoChange = (e) => {
-    setidGrupoReg(e.target.value);
+    const selectedGroupId = e.target.value;
+    setidGrupoReg(selectedGroupId);
   };
 
   const submitUser = () => {
@@ -39,12 +57,16 @@ const Register = () => {
       id_grupo: idGrupoReg,
     }).then((response) => {
       console.log(response);
-      // Lógica para lidar com a resposta de sucesso no cadastro do produto
     }).catch((error) => {
       if (error.response) {
         setErrorMessage(error.response.data.message);
       }
     });
+  }
+
+  // Verifica se o usuário está autenticado, se não, redireciona para a página de login
+  if (!authenticated) {
+    return <Redirect to="/register" />;
   }
 
   return (
@@ -65,15 +87,14 @@ const Register = () => {
             setvolumeReg(e.target.value)
           }} />
         <input type="text" name="grupo" rows='2' placeholder="Grupo" className="Small"
-          value={idGrupoReg} // Exibe o valor atual do campo
-          onChange={handleGrupoChange} // Usa a função de alteração personalizada
+          value={idGrupoReg}
+          onChange={handleGrupoChange}
         />
 
-        {/* Mostra as opções de grupo disponíveis */}
         <ul>
           {grupoOptions.map((grupo) => (
             <li key={grupo.id}>
-              <button onClick={() => setidGrupoReg(grupo.descricao)}>
+              <button onClick={() => handleGrupoChange({ target: { value: grupo.id } })}>
                 {grupo.descricao}
               </button>
             </li>
@@ -88,6 +109,6 @@ const Register = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Register;
+export default Produto;
