@@ -9,7 +9,7 @@ const Menu = () => {
       <ul className="SidebarList">
         <img className="SidebarList" src={iconERP}></img>
         <li className="row" >
-          <Link className="row" to="/">Home</Link>
+          <Link className="row" to="/login/">Login</Link>
         </li>
         <li className="row" >
           <Link className="row" to="/register">Register</Link>

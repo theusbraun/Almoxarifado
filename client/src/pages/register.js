@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./style.css";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const Register = () => {
   const [usuario, setUsuario] = useState({
@@ -11,7 +12,10 @@ const Register = () => {
     senha: "",
   });
 
+  const history = useHistory();
+
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     setUsuario({
@@ -24,18 +28,14 @@ const Register = () => {
     axios
       .post("http://localhost:3001/register", usuario)
       .then((response) => {
-        console.log(response);
+          setSuccessMessage(response.data.message);
+          history.push({
+            pathname: "/",
+            state: {
+                  successMessage: "Usuário cadastrado com sucesso!"
+            }
+});
 
-        // Limpa o formulário após o cadastro
-        setUsuario({
-          nome: "",
-          data_nascimento: "",
-          cpf: "",
-          email: "",
-          senha: "",
-        });
-
-        setErrorMessage("");
       })
       .catch((error) => {
         if (error.response) {

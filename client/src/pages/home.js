@@ -1,46 +1,34 @@
-import React, { useEffect, useState } from "react"
-import './style.css'                                    
-import Axios from 'axios'
+import React, { useEffect, useState } from "react";
+import './style.css';
+import Axios from 'axios';
+import Snackbar from "@material-ui/core/Snackbar";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
-  const [loginReg, setLogin] = useState('')
-  const [senhaReg, setSenha] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
 
-  Axios.defaults.withCredentials = true
+    const [open, setOpen] = useState(false);
+    const location = useLocation();
 
-  const submitLogin = () => {
-    Axios.post("http://localhost:3001/login", {
-      login: loginReg,
-      senha: senhaReg
-    })
-      .then((response) => {
-        console.log(response);
-        // Lógica para lidar com a resposta de sucesso do login
-      })
-      .catch((error) => {
-        if (error.response) {
-          setErrorMessage(error.response.data.message);
+    useEffect(() => {
+        if (location.state?.successMessage) {
+            setOpen(true);
         }
-      });
-  };
+    }, [location]);
 
-  return (
+    return (
     <div className="Formulario">
-      <h1>Login</h1>
-      <input type="text" class="Small" placeholder="Cpf ou email"
-        onChange={(e) => {
-          setLogin(e.target.value);
-        }} />
-      <input type="password" class="Small" placeholder="Senha"
-        onChange={(e) => {
-          setSenha(e.target.value)
-        }} />
-       <button onClick={submitLogin} className="Button">Login</button>
-    <br />
-    {errorMessage && <p>{errorMessage}</p>}
-  </div>
-  );
+        <h1>BEM VINDO</h1>
+        <div>
+        <Snackbar
+            open={open}
+            autoHideDuration={4000}
+            onClose={() => setOpen(false)}
+            message={location.state?.successMessage}
+        />
+        </div>
+    </div>
+
+    );
 }
 
 export default Home;

@@ -1,38 +1,71 @@
-const session = require('express-session')
 const Usuario = require('../models/Usuarios')
 
 module.exports = app => {
 
     app.post('/register', (req, res) => {
-        let registro = req.body
-        console.log(registro)
-        
-        Usuario.adiciona(registro, res)
-    })
 
-    app.post('/login', (req, res) => {
+        const usuario = req.body;
 
-        const login = req.body
-        console.log(login)
+        Usuario.adiciona(usuario, res);
 
-        Usuario.Login(login, res)
-    })
+    });
 
-    app.get('login', (req, res) => {
-        if (session.user) {
-            res.send({loggedIn: true, user: req.session.user})
-        } else {
-            res.send({loggedIn: false})
+    app.post('/login', async (req, res) => {
+
+        try {
+
+            const usuario = await Usuario.login(req.body);
+
+            if (!usuario) {
+                return res.status(401).json({
+                    message: "Usuário ou senha inválidos."
+                });
+            }
+
+            req.session.user = usuario;
+
+            return res.status(200).json({
+                message: `Bem vindo ${usuario.nome}! Bora trabalhar!`,
+                usuario: {
+                    id: usuario.id,
+                    nome: usuario.nome,
+                    email: usuario.email
+                }
+            });
+
+        } catch (erro) {
+
+            console.error(erro);
+
+            return res.status(500).json({
+                message: "Erro interno do servidor."
+            });
+
         }
-    })
+
+    });
+
+    app.get('/login', (req, res) => {
+
+        if (req.session.user) {
+            return res.send({
+                loggedIn: true,
+                user: req.session.user
+            });
+        }
+        return res.send({
+            loggedIn: false
+        });
+    });
 
     
     app.post('/trocarSenha', (req, res) => {
 
-        const user = req.body
+        const usuario = req.body;
 
-        Usuario.trocarSenha(user, res)
-    })
+        Usuario.trocarSenha(usuario, res);
+
+    });
 
     /*app.patch('/usuarios/:id', (req, res) => {
         const id = parseInt(req.params.id)

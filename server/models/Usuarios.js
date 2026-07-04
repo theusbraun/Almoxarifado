@@ -1,153 +1,174 @@
-const moment = require('moment')
 const conexao = require('../infraestrutura/conexao')
 
 const bcrypt = require('bcrypt')
-const session = require('express-session')
 const saltRounds = 10
-var cpfInvalido = false
 
 class Usuario {
 
-    verificarCpf(usuario, res) {
-        let cpf = usuario.cpf
+    verificarCpf(usuario) {
 
-        let Soma = 0
-        let Resto = 0
-        let i = 0
+      let cpfInvalido = false;
+      const cpf = usuario.cpf;
 
-        if (cpf == "00000000000" || cpf.length != 11) {
-            cpfInvalido = true
-        }
+      let soma = 0;
+      let resto = 0;
 
-        for (i = 1; i <= 9; i++) Soma = Soma + parseInt(cpf.substring(i - 1, i)) * (11 - i);
-        Resto = (Soma * 10) % 11;
-
-        if ((Resto == 10) || (Resto == 11)) Resto = 0;
-        if (Resto != parseInt(cpf.substring(9, 10))) {
-            cpfInvalido = true
-        }
-
-        Soma = 0;
-        for (i = 1; i <= 10; i++) Soma = Soma + parseInt(cpf.substring(i - 1, i)) * (12 - i);
-        Resto = (Soma * 10) % 11;
-
-        if ((Resto == 10) || (Resto == 11)) Resto = 0;
-        if (Resto != parseInt(cpf.substring(10, 11))) {
-            cpfInvalido = true
-        }
-    }
-    
-    async cpfCadastrado(usuario) {
-        return new Promise((resolve, reject) => {
-          if (cpfInvalido == false) {
-            let cpf = usuario.cpf
-            let sql = 'select * from u_usuarios where cpf = ?'
-      
-            conexao.query(sql, cpf, (erro, resultados) => {
-              if (erro) {
-                reject(erro);
-              } else {
-                resolve(resultados.length > 0);
-              }
-            })
-          } else {
-            resolve(false);
-          }
-        });
+      if (cpf === "00000000000" || cpf.length !== 11) {
+          return true;
       }
+
+      for (let i = 1; i <= 9; i++) {
+          soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+      }
+
+      resto = (soma * 10) % 11;
+
+      if (resto === 10 || resto === 11) {
+          resto = 0;
+      }
+
+      if (resto !== parseInt(cpf.substring(9, 10))) {
+          cpfInvalido = true;
+      }
+
+      soma = 0;
+
+      for (let i = 1; i <= 10; i++) {
+          soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+      }
+
+      resto = (soma * 10) % 11;
+
+      if (resto === 10 || resto === 11) {
+          resto = 0;
+      }
+
+      if (resto !== parseInt(cpf.substring(10, 11))) {
+          cpfInvalido = true;
+      }
+
+      return cpfInvalido;
+  }
+      
+    async cpfCadastrado(usuario) {
+
+        return new Promise((resolve, reject) => {
+
+            const sql = 'SELECT * FROM u_usuarios WHERE cpf = ?';
+
+            conexao.query(sql, usuario.cpf, (erro, resultados) => {
+
+                if (erro) {
+                    return reject(erro);
+                }
+
+                resolve(resultados.length > 0);
+
+            });
+
+        });
+
+    }
       
       async emailCadastrado(usuario) {
         return new Promise((resolve, reject) => {
           let email = usuario.email
-          console.log(email)
-          let emailSql = 'select * from u_usuarios where email = ?'
+
+          const sql = 'SELECT * FROM u_usuarios WHERE email = ?';
       
-          conexao.query(emailSql, email, (erro, resultados) => {
+          conexao.query(sql, email, (erro, resultados) => {
             if (erro) {
-              reject(erro);
-            } else {
-              resolve(resultados.length > 0);
-            }
+              return reject(erro);
+            } 
+
+            resolve(resultados.length > 0);
           })
         });
       }
       
       async adiciona(usuario, res) {
         try {
-          await this.verificarCpf(usuario);
+          const cpfInvalido = this.verificarCpf(usuario);
           const isCpfCadastrado = await this.cpfCadastrado(usuario);
           const isEmailCadastrado = await this.emailCadastrado(usuario);
       
-          console.log(isCpfCadastrado, isEmailCadastrado, cpfInvalido)
           if (!isCpfCadastrado && !cpfInvalido && !isEmailCadastrado) {
-            let sql = 'INSERT INTO u_usuarios SET ?'
+            const sql = 'INSERT INTO u_usuarios SET ?'
       
             bcrypt.hash(usuario.senha, saltRounds, (err, hash) => {
               if (err) {
-                console.log(err)
-                throw new Error('Erro ao gerar hash de senha');
+                  console.error(err);
+                  return res.status(500).json({
+                      message: "Erro ao criptografar senha."
+                  });
               }
               usuario.senha = hash
       
               conexao.query(sql, usuario, (erro) => {
                 if (erro) {
-                  res.json(erro)
-                } else {
-                  res.json(usuario)
+                    return res.status(500).json(erro);
                 }
+
+                return res.status(201).json({message: "Usuário cadastrado com sucesso!"});
               })
             })
           } else {
             if (cpfInvalido) {
-              res.status(400).json({ message: 'CPF INVALIDO' })
+              return res.status(400).json({ message: 'CPF INVALIDO' })
             } else if (isCpfCadastrado) {
-              res.status(400).json({ message: 'CPF JÁ CADASTRADO' })
+              return res.status(400).json({ message: 'CPF JÁ CADASTRADO' })
             } else {
-              res.status(400).json({ message: 'E-mail JÁ CADASTRADO' })
+              return res.status(400).json({ message: 'E-mail JÁ CADASTRADO' })
             }
           }
-          cpfInvalido = false
         } catch (error) {
           console.error(error);
-          res.status(500).json({ error: 'Erro no servidor' });
+          return res.status(500).json({ error: 'Erro no servidor' });
         }
       }
 
-    Login(login, res) {
-        const user = login.login
-        const pass = login.senha
-        let sql = ''
+    async login(usuario) {
 
-        if (Number.isInteger(user * 1)) {
-          sql = `SELECT * FROM u_usuarios WHERE cpf= ?`;
-      } else {
-          sql = `SELECT * FROM u_usuarios WHERE email= ?`;
-      }      
+    const usuarioLogin = usuario.login;
+    const senha = usuario.senha;
 
-        conexao.query(sql, user, (erro, resultados) => {
+    const sql = Number.isInteger(usuarioLogin * 1)
+        ? 'SELECT * FROM u_usuarios WHERE cpf = ?'
+        : 'SELECT * FROM u_usuarios WHERE email = ?';
+
+    return new Promise((resolve, reject) => {
+
+        conexao.query(sql, usuarioLogin, (erro, resultados) => {
+
             if (erro) {
-                res.status(400).json(erro)
+                return reject(erro);
             }
 
-
-            if (resultados.length > 0) {
-                bcrypt.compare(pass, resultados[0].senha, (error, response) => {
-                    if (response) {
-                        session.user = resultados[0]
-                        res.send({ message: session.user})
-                    }
-                    else { 
-                      res.status(401).json({ message: "Combinação inválida" })
-                    }
-                })
-            } 
-            else {
-              res.status(401).json({ message: "Usuário não identificado"})
+            if (resultados.length === 0) {
+                return resolve(null);
             }
-        })
+
+            bcrypt.compare(senha, resultados[0].senha, (erro, senhaCorreta) => {
+
+                if (erro) {
+                    return reject(erro);
+                }
+
+                if (!senhaCorreta) {
+                    return resolve(null);
+                }
+
+                return resolve(resultados[0]);
+
+            });
+
+        });
+
+    });
 
     }
 
+    /* NECESSARIO CRIAR A TELA DE ALTERAR DADOS
     altera(id, valores, res) {
         if (valores.data) {
             valores.data = moment(valores.data, 'DD/MM/YYYY').format('YYYY-MM-DD')
@@ -162,19 +183,9 @@ class Usuario {
             }
         })
     }
+    */
 
-    deleta(id, res) {
-        let sql = 'DELETE FROM u_usuarios where id =?'
-
-        conexao.query(sql, id, (erro, resultados) => {
-            if (erro) {
-                res.status(400).json(erro)
-            } else {
-                res.status(200).json({ id })
-            }
-        })
-    }
-
+    /*Necessario criar troca de senha:
     trocarSenha(id, senha, res) {
         let sql = 'update u_usuarios set ? where id=?'
 
@@ -193,9 +204,8 @@ class Usuario {
                 }
             } )
         })
-
-        
     }
+    */
 }
 
 module.exports = new Usuario
