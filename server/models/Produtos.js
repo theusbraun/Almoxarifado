@@ -22,9 +22,9 @@ class Produto {
       
           // Verifica se há resultados e retorna a lista de grupos como resposta
           if (resultados.length > 0) {
-            res.send(resultados);
+            return res.send(resultados);
           } else {
-            res.send([]); // Retorna um array vazio se não houver resultados
+            return res.send([]); // Retorna um array vazio se não houver resultados
           }
         });
       }
@@ -48,18 +48,30 @@ class Produto {
 
     criarGrupo(grupo, res) {
 
-        const values = grupo
+        const sql = "INSERT INTO a_grupo SET ?";
 
-        const sql = 'INSERT INTO a_grupo set ?'
+        conexao.query(sql, grupo, (erro, resultado) => {
 
-        console.log(sql)
+            if (erro) {
 
-        conexao.query(sql, values, (err) => {
-            if (err) {
-                console.log(err)
-                res.json(err)
-            } 
-        })
+                console.error(erro);
+
+                return res.status(500).json({
+                    message: "Erro ao cadastrar grupo."
+                });
+
+            }
+
+            return res.status(201).json({
+                message: "Grupo cadastrado com sucesso.",
+                grupo: {
+                    id: resultado.insertId,
+                    ...grupo
+                }
+            });
+
+        });
+
     }
 }
 
