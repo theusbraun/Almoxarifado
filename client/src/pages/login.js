@@ -42,16 +42,9 @@ const Login = () => {
                 senha
             })
             .then((response) => {
-
-                console.log("LOGIN OK");
-                console.log(response.data);
-
-                console.log("Redirecionando...");
-                
-                console.log("URL atual:", window.location.pathname);
-
-            })
-            .catch((error) => {
+                history.push("/");
+                window.location.reload();
+            }).catch((error) => {
                 if (error.response) {
                     setErrorMessage(error.response.data.message);
                 } else {

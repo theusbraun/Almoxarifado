@@ -26,8 +26,6 @@ const Home = () => {
 
             <h1>Bem-vindo!</h1>
 
-            <p>Você está autenticado no sistema.</p>
-
             <Snackbar
                 open={open}
                 autoHideDuration={4000}

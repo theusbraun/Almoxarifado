@@ -12,6 +12,7 @@ const Root = () => {
 
     const [loading, setLoading] = useState(true);
     const [authenticated, setAuthenticated] = useState(false);
+    const [authVersion, setAuthVersion] = useState(0);
 
     useEffect(() => {
 
@@ -42,7 +43,7 @@ const Root = () => {
 
         checkAuthentication();
 
-    }, []);
+    }, [authVersion]);
 
     if (loading) {
         return <p>Carregando...</p>;
@@ -51,7 +52,12 @@ const Root = () => {
     return (
         <Switch>
 
-            <Route path="/login" component={Login} />
+            <Route
+                path="/login"
+                render={() =>
+                    authenticated ? <Redirect to="/" /> : <Login />
+                }
+            />
             <Route path="/register" component={Register} />
 
             <Route
