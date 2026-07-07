@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 import "./style.css";
 
-const Grupo = () => {
+axios.defaults.withCredentials = true;
 
+const Grupo = () => {
     const [grupo, setGrupo] = useState({
         descricao: ""
     });
@@ -12,19 +13,27 @@ const Grupo = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
-    useEffect(() => {
+    const handleChange = (e) => {
+        setGrupo({
+            ...grupo,
+            [e.target.name]: e.target.value
+        });
+    };
 
-        axios.defaults.withCredentials = true;
+    const limparFormulario = () => {
+        setGrupo({
+            descricao: ""
+        });
 
-    }, []);
+        setErrorMessage("");
+        setSuccessMessage("");
+    };
 
     const submitGrupo = async () => {
-
         setErrorMessage("");
         setSuccessMessage("");
 
         try {
-
             const response = await axios.post(
                 "http://localhost:3001/criarGrupo",
                 grupo
@@ -39,65 +48,76 @@ const Grupo = () => {
             });
 
         } catch (error) {
-
             if (error.response) {
-
                 setErrorMessage(error.response.data.message);
-
             } else {
-
                 setErrorMessage("Erro ao conectar com o servidor.");
-
             }
-
         }
-
     };
 
     return (
+        <div className="Page">
+            <div className="PageHeader">
+                <h1>Cadastro de Grupo</h1>
 
-        <div className="Formulario">
+                <span>
+                    Cadastre grupos para organizar os produtos do sistema.
+                </span>
+            </div>
 
-            <h1>Novo Grupo</h1>
+            <div className="Card">
+                <fieldset className="Fieldset">
+                    <legend>Dados do Grupo</legend>
 
-            <input
-                type="text"
-                className="Small"
-                placeholder="Descrição"
-                value={grupo.descricao}
-                onChange={(e) =>
-                    setGrupo({
-                        ...grupo,
-                        descricao: e.target.value
-                    })
-                }
-            />
+                    <div className="FormGrid">
+                        <div className="FormItem">
+                            <label>Descrição</label>
 
-            <button
-                className="Button"
-                onClick={submitGrupo}
-            >
-                Salvar
-            </button>
+                            <input
+                                type="text"
+                                name="descricao"
+                                className="Small"
+                                placeholder="Informe a descrição do grupo"
+                                value={grupo.descricao}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
+                </fieldset>
 
-            <br />
+                <div className="Actions">
+                    <button
+                        type="button"
+                        className="SecondaryButton"
+                        onClick={limparFormulario}
+                    >
+                        Cancelar
+                    </button>
 
-            {errorMessage && (
-                <p className="ErrorMessage">
-                    {errorMessage}
-                </p>
-            )}
+                    <button
+                        type="button"
+                        className="Button"
+                        onClick={submitGrupo}
+                    >
+                        Salvar
+                    </button>
+                </div>
 
-            {successMessage && (
-                <p className="SuccessMessage">
-                    {successMessage}
-                </p>
-            )}
+                {errorMessage && (
+                    <p className="ErrorMessage">
+                        {errorMessage}
+                    </p>
+                )}
 
+                {successMessage && (
+                    <p className="SuccessMessage">
+                        {successMessage}
+                    </p>
+                )}
+            </div>
         </div>
-
     );
-
 };
 
 export default Grupo;

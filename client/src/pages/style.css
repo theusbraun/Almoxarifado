@@ -1,230 +1,696 @@
-.Page{
-    display:flex;
-    flex-direction:column;
-    gap:30px;
-    padding:10px;
+/* ==========================================================
+   RESET
+========================================================== */
+
+* {
+
+    box-sizing: border-box;
+
 }
 
-.PageHeader h1{
-    margin:0;
+html,
+body,
+#root {
 
-    color:#393646;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
 
-    font-size:34px;
-
-    font-weight:700;
 }
 
-.PageHeader span{
+:root {
 
-    color:#6D5D6E;
+    --menu: #153B8A;
 
-    font-size:15px;
 }
 
-.Card{
 
-    background:#FCFAF5;
+/* ==========================================================
+   LAYOUT
+========================================================== */
 
-    border-radius:18px;
+.App {
 
-    padding:35px;
+    display: flex;
+    min-height: 100vh;
+    background: #F4EEE0;
 
+}
+
+.MainContent {
+
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+
+}
+
+.Page {
+
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 10px;
+
+}
+
+
+/* ==========================================================
+   CABEÇALHOS
+========================================================== */
+
+.PageHeader h1 {
+    margin: 0;
+    color: #393646;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.PageHeader span {
+
+    color: #7A7F8C;
+    font-size: 14px;
+    margin-top: 6px;
+    display: block;
+
+}
+
+.LoginHeader {
+
+    text-align: center;
+    margin-bottom: 30px;
+
+}
+
+.LoginHeader h1 {
+
+    margin: 0;
+    color: #393646;
+    font-size: 32px;
+    font-weight: 700;
+
+}
+
+
+.LoginHeader span {
+
+    display: block;
+    margin-top: 8px;
+    color: #6D5D6E;
+    font-size: 14px;
+
+}
+
+/* ==========================================================
+   CARDS
+========================================================== */
+
+.Card {
+
+    background: #FCFAF5;
+    border-radius: 22px;
+    padding: 35px;
     box-shadow:
-        0 10px 25px rgba(0,0,0,.08);
+        0 15px 35px rgba(0, 0, 0, .08);
+}
+
+.LoginCard {
+
+    width: 420px;
+    border-radius: 20px;
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, .18);
+}
+
+/* ==========================================================
+   FIELDSET
+========================================================== */
+
+.Fieldset {
+
+    border: 1px solid #E2E6EF;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 30px;
+    background: #FFFFFF;
+    position: relative;
+    transition: .2s;
 
 }
 
-.FormGrid{
+.Fieldset:hover {
 
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:20px;
+    border-color: #C9D5F5;
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, .05);
 
 }
 
-.Small,
-.Big{
+.Fieldset legend {
 
-    width:100%;
-
-    padding:12px 14px;
-
-    border:1px solid #D8DCE5;
-
-    border-radius:10px;
-
-    background:#F8F9FC;
-
-    color:#393646;
-
-    font-size:15px;
-
-    font-family:inherit;
-
-    box-sizing:border-box;
-
-    transition:.2s;
-
-    resize:none;
-
+    padding: 0 14px;
+    color: #153B8A;
+    font-size: 16px;
+    font-weight: 700;
+    background: #FCFAF5;
 }
 
-.Big{
+/* ==========================================================
+   FORMULÁRIOS
+========================================================== */
 
-    min-height:130px;
+.FormGrid {
 
-}
-
-.Small::placeholder,
-.Big::placeholder{
-
-    color:#9CA3AF;
-
-}
-
-.Small:focus,
-.Big:focus{
-
-    outline:none;
-
-    border-color:#2E73FF;
-
-    background:white;
-
-    box-shadow:0 0 0 4px rgba(46,115,255,.12);
-
-}
-
-.Actions{
-
-    margin-top:30px;
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    gap:15px;
-
-}
-
-.SecondaryButton{
-
-    width:170px;
-    height:46px;
-
-    border:1px solid #D8DCE5;
-
-    background:white;
-
-    color:#393646;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-}
-
-.SecondaryButton:hover{
-
-    background:#F4F6FA;
-
-}
-
-.Button{
-
-    width:170px;
-    height:46px;
-
-    border:none;
-
-    border-radius:10px;
-
-    background:#2E73FF;
-
-    color:white;
-
-    font-size:15px;
-
-    font-weight:600;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-}
-
-.Button:hover{
-
-    background:#1E5FDB;
-
-}
-
-.FormItem{
-
-    display:flex;
-
-    flex-direction:column;
-
-}
-
-.FormItem label{
-
-    margin-bottom:8px;
-
-    color:#393646;
-
-    font-size:14px;
-
-    font-weight:600;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 
 }
 
 .FormItem {
+
     display: flex;
     flex-direction: column;
+
 }
 
 .FormItem label {
+
     margin-bottom: 8px;
-    font-weight: 600;
     color: #393646;
+    font-size: 14px;
+    font-weight: 600;
+
 }
 
 .FullWidth {
     grid-column: 1 / -1;
 }
 
+/* ==========================================================
+   INPUTS
+========================================================== */
+
+.Small,
+.Big {
+
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #D8DCE5;
+    border-radius: 10px;
+    background: #F8F9FC;
+    color: #393646;
+    font-size: 15px;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: .2s;
+    resize: none;
+}
+
+.Big {
+    min-height: 130px;
+}
+
+.Small:focus,
+.Big:focus {
+
+    outline: none;
+    border-color: #2E73FF;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(46, 115, 255, .12);
+}
+
+.Small::placeholder,
+.Big::placeholder {
+
+    color: #9CA3AF;
+
+}
+
+/* ==========================================================
+   BOTÕES
+========================================================== */
+
+.Button {
+
+    width: 170px;
+    height: 46px;
+    border: none;
+    border-radius: 10px;
+    background: #2E73FF;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+
+}
+
+.Button:hover {
+    background: #1E5FDB;
+}
+
+.SecondaryButton {
+
+    width: 170px;
+    height: 46px;
+    border: 1px solid #D8DCE5;
+    background: white;
+    color: #393646;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s;
+
+}
+
+.SecondaryButton:hover {
+    background: #F4F6FA;
+}
+
+.LinkButton {
+
+    border: none;
+    background: none;
+    color: #2E73FF;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+}
+
+
+.LinkButton:hover {
+
+    text-decoration: underline;
+
+}
+
+/* ==========================================================
+   AÇÕES
+========================================================== */
+
 .Actions {
     grid-column: 1 / -1;
-
     display: flex;
     justify-content: flex-end;
     gap: 15px;
-
     margin-top: 20px;
 }
+
+.LoginActions {
+    justify-content: center;
+}
+
+/* ==========================================================
+   LOGIN
+========================================================== */
+
+.LoginContainer {
+
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--menu);
+    box-sizing: border-box;
+}
+
+.LoginLogo {
+
+    width: 150px;
+    height: auto;
+    margin: 25px auto 0;
+    opacity: .85;
+}
+
+.LoginCard .FormGrid {
+
+    grid-template-columns: 1fr;
+
+}
+
+.RegisterLink {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    color: #6D5D6E;
+    font-size: 14px;
+}
+
+/* ==========================================================
+   MENSAGENS
+========================================================== */
 
 .ErrorMessage,
 .SuccessMessage {
     grid-column: 1 / -1;
 }
 
-.App {
-    display: flex;
-    min-height: 100vh;
+/* ==========================================================
+   DASHBOARD
+========================================================== */
 
-    background: #F4EEE0;
+.DashboardCards {
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+
 }
 
-.MainContent {
-    flex: 1;
+.DashboardCard {
 
-    padding: 40px;
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+    transition: .25s;
+    border: 1px solid transparent;
 
-    overflow-y: auto;
+}
+
+.DashboardCard:hover {
+
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+    transition: .25s;
+    border: 1px solid transparent;
+
+}
+
+.DashboardCardTop {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+
+}
+
+.DashboardCardTitle {
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+}
+
+.DashboardCardTitle span {
+
+    color: #393646;
+    font-size: 24px;
+    font-weight: 600;
+
+}
+
+.DashboardCard span {
+
+    color: #7A7F8C;
+    font-size: 14px;
+
+}
+
+.DashboardCard h2 {
+
+    margin: 0;
+    color: #153B8A;
+    font-size: 24px;
+    font-weight: 700;
+
+}
+
+.DashboardCard small {
+
+    display: block;
+    color: #8A8F99;
+    font-size: 14px;
+    margin-top: 8px;
+
+}
+
+.DashboardGrid {
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+
+}
+
+.SectionTitle {
+
+    margin: 0 0 20px;
+    color: #393646;
+
+}
+
+.ActivityList {
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+}
+
+.ActivityList li {
+
+    padding: 14px 0;
+    border-bottom: 1px solid #ECECEC;
+    color: #555;
+
+}
+
+.ActivityList li:last-child {
+
+    border-bottom: none;
+
+}
+
+.DashboardText {
+
+    color: #666;
+    line-height: 1.8;
+    font-size: 15px;
+
+}
+
+.DashboardIcon {
+
+    color: #2E73FF;
+    font-size: 22px;
+
+}
+
+.DashboardCard h2 {
+
+    margin: 0;
+    color: #153B8A;
+    font-size: 42px;
+    font-weight: 700;
+
+}
+
+.DashboardCard small {
+
+    color: #9CA3AF;
+    font-size: 14px;
+
+}
+
+.SectionTitle {
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin: 0 0 20px;
+
+    color: #393646;
+    font-size: 22px;
+
+}
+
+.SectionTitle svg {
+
+    color: #2E73FF;
+
+}
+
+.clientes .DashboardIcon,
+.clientes h2 {
+    color: #2E73FF;
+}
+
+.impostos .DashboardIcon,
+.impostos h2 {
+    color: #8B5CF6;
+}
+
+.pendencias .DashboardIcon,
+.pendencias h2 {
+    color: #F59E0B;
+}
+
+.empresas .DashboardIcon,
+.empresas h2 {
+    color: #10B981;
+}
+
+.DashboardCard {
+
+    position: relative;
+
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+
+    border: 1px solid #E6EAF3;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, .08);
+
+    transition: .25s;
+
+    overflow: hidden;
+
+}
+
+.DashboardCard::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 5px;
+
+    background: #2E73FF;
+
+}
+
+.DashboardCard:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 18px 40px rgba(0, 0, 0, .12);
+
+}
+
+.DashboardCardTop {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 15px;
+
+}
+
+.DashboardCardTitle {
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+}
+
+.DashboardCardTitle span {
+
+    font-size: 22px;
+    font-weight: 600;
+
+    color: #393646;
+
+}
+
+.DashboardCard h2 {
+
+    margin: 0;
+
+    font-size: 24px;
+    font-weight: 700;
+
+}
+
+.DashboardCard small {
+
+    display: block;
+
+    color: #7A7F8C;
+
+    font-size: 14px;
+
+}
+
+/* CLIENTES */
+
+.clientes::before {
+
+    background: #2E73FF;
+
+}
+
+.clientes .DashboardIcon,
+.clientes h2 {
+
+    color: #2E73FF;
+
+}
+
+
+/* IMPOSTOS */
+
+.impostos::before {
+
+    background: #8B5CF6;
+
+}
+
+.impostos .DashboardIcon,
+.impostos h2 {
+
+    color: #8B5CF6;
+
+}
+
+
+/* PENDÊNCIAS */
+
+.pendencias::before {
+
+    background: #F59E0B;
+
+}
+
+.pendencias .DashboardIcon,
+.pendencias h2 {
+
+    color: #F59E0B;
+
+}
+
+
+/* EMPRESAS */
+
+.empresas::before {
+
+    background: #10B981;
+
+}
+
+.empresas .DashboardIcon,
+.empresas h2 {
+
+    color: #10B981;
+
 }

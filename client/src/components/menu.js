@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import {
+    FaHome,
     FaBoxOpen,
     FaLayerGroup,
     FaUsers,
@@ -15,6 +16,11 @@ const Menu = () => {
     const location = useLocation();
 
     const menus = [
+        {
+            path: "/",
+            title: "Home",
+            icon: <FaHome />
+        },
         {
             path: "/Produtos",
             title: "Produtos",
