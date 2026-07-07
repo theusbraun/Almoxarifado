@@ -7,24 +7,30 @@ import "./style.css";
 const Home = () => {
     const location = useLocation();
 
+    const [title, setTitle] = useState("Bem-vindo!");
     const [open, setOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
-        if (location.state?.successMessage) {
-            setSuccessMessage(location.state.successMessage);
+        const message = location.state?.successMessage;
+        const usuario = location.state?.usuario;
+
+        if (usuario?.nome) {
+            setTitle(`Bem-vindo ${usuario.nome}!`);
+        }
+
+        if (message) {
+            setSuccessMessage(message);
             setOpen(true);
 
-            // Limpa o state da rota para que o Snackbar
-            // não apareça novamente ao atualizar a página.
+            // limpa state após uso
             window.history.replaceState({}, document.title);
         }
-    }, [location]);
+    }, [location.state]);
 
     return (
-        <div className="Formulario">
-
-            <h1>Bem-vindo!</h1>
+        <div className="Content">
+            <h1>{title}</h1>
 
             <Snackbar
                 open={open}
@@ -32,7 +38,6 @@ const Home = () => {
                 onClose={() => setOpen(false)}
                 message={successMessage}
             />
-
         </div>
     );
 };

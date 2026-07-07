@@ -25,7 +25,7 @@ module.exports = app => {
             req.session.user = usuario;
 
             return res.status(200).json({
-                message: `Bem vindo ${usuario.nome}! Bora trabalhar!`,
+                message: `Bora trabalhar!`,
                 usuario: {
                     id: usuario.id,
                     nome: usuario.nome,

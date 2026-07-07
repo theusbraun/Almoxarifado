@@ -1,59 +1,62 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { useHistory, useLocation } from "react-router-dom";
-import Snackbar from "@material-ui/core/Snackbar";
+import { useHistory } from "react-router-dom";
 
 import "./style.css";
 
 axios.defaults.withCredentials = true;
 
-const Login = () => {
+const Login = (props) => {
     const history = useHistory();
-
-    console.log(history);
-    const location = useLocation();
 
     const [login, setLogin] = useState("");
     const [senha, setSenha] = useState("");
-
     const [errorMessage, setErrorMessage] = useState("");
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
 
-    useEffect(() => {
-        if (location.state?.successMessage) {
-            setSnackbarMessage(location.state.successMessage);
-            setOpenSnackbar(true);
+    const goToRegister = () => {
+        history.push("/register");
+    };
 
-            // Remove o state para não aparecer novamente ao atualizar a página
-            history.replace({
-                pathname: location.pathname,
-                state: {}
-            });
-        }
-    }, [location, history]);
-
-    const submitLogin = () => {
+    const submitLogin = async () => {
         setErrorMessage("");
 
-        axios
-            .post("http://localhost:3001/login", {
-                login,
-                senha
-            })
-            .then((response) => {
-                history.push("/");
-                window.location.reload();
-            }).catch((error) => {
-                if (error.response) {
-                    setErrorMessage(error.response.data.message);
-                } else {
-                    setErrorMessage("Erro ao conectar com o servidor.");
+        try {
+            const response = await axios.post(
+                "http://localhost:3001/login",
+                {
+                    login,
+                    senha
+                },
+                {
+                    withCredentials: true
+                }
+            );
+
+            if (props.refreshAuth) {
+                await props.refreshAuth();
+            }
+
+            history.push({
+                pathname: "/",
+                state: {
+                    successMessage:
+                        response.data.message ||
+                        "Login realizado com sucesso!",
+                    usuario: response.data.usuario
                 }
             });
+
+        } catch (error) {
+            if (error.response) {
+                setErrorMessage(error.response.data.message);
+            } else {
+                setErrorMessage("Erro ao conectar com o servidor.");
+            }
+        }
     };
 
     return (
+    <div className="LoginContainer">
         <div className="Formulario">
             <h1>Login</h1>
 
@@ -80,18 +83,25 @@ const Login = () => {
                 Login
             </button>
 
-            <br />
+            {errorMessage && (
+                <p className="ErrorMessage">{errorMessage}</p>
+            )}
 
-            {errorMessage && <p>{errorMessage}</p>}
+            <div className="RegisterLink">
+                <span>Ainda não possui uma conta? </span>
 
-            <Snackbar
-                open={openSnackbar}
-                autoHideDuration={4000}
-                onClose={() => setOpenSnackbar(false)}
-                message={snackbarMessage}
-            />
+                <button
+                    type="button"
+                    className="LinkButton"
+                    onClick={goToRegister}
+                >
+                    Cadastre-se
+                </button>
+            </div>
+
         </div>
-    );
+    </div>
+);
 };
 
 export default Login;
