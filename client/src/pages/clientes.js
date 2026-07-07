@@ -2,15 +2,22 @@ import React, { useState } from "react";
 import axios from "axios";
 import InputMask from "react-input-mask";
 
+import {
+    tributacoes,
+    situacoes
+} from "../constants/clienteOptions";
+
 import "./style.css";
 
 axios.defaults.withCredentials = true;
 
 const Cliente = () => {
+
     const [cliente, setCliente] = useState({
         nome: "",
-        tipo_pessoa: "fisica",
+        tipo_documento: "f",
         documento: "",
+        tipo_entrega: "E",
         email: "",
         telefone: "",
         tributacao: "",
@@ -21,25 +28,33 @@ const Cliente = () => {
     const [successMessage, setSuccessMessage] = useState("");
 
     const handleChange = (e) => {
+
         setCliente({
             ...cliente,
             [e.target.name]: e.target.value
         });
+
     };
 
     const alterarTipoPessoa = (e) => {
+
         setCliente({
             ...cliente,
             tipo_pessoa: e.target.value,
-            documento: ""
+            documento: "",
+            tributacao: "",
+            tipo_situacao: ""
         });
+
     };
 
     const submitCliente = async () => {
+
         setErrorMessage("");
         setSuccessMessage("");
 
         try {
+
             const dadosCliente = {
                 ...cliente,
                 documento: cliente.documento.replace(/\D/g, "")
@@ -56,8 +71,9 @@ const Cliente = () => {
 
             setCliente({
                 nome: "",
-                tipo_pessoa: "fisica",
+                tipo_documento: "f",
                 documento: "",
+                tipo_entrega: "E",
                 email: "",
                 telefone: "",
                 tributacao: "",
@@ -65,16 +81,20 @@ const Cliente = () => {
             });
 
         } catch (error) {
+
             if (error.response) {
                 setErrorMessage(error.response.data.message);
             } else {
                 setErrorMessage("Erro ao conectar com o servidor.");
             }
+
         }
+
     };
 
     return (
         <div className="Page">
+
             <div className="PageHeader">
                 <h1>Cadastro de Cliente</h1>
                 <span>
@@ -83,10 +103,13 @@ const Cliente = () => {
             </div>
 
             <div className="Card">
+
                 <fieldset className="Fieldset">
+
                     <legend>Dados do Cliente</legend>
 
                     <div className="FormGrid">
+
                         <div className="FormItem">
                             <label>Nome / Razão Social</label>
 
@@ -104,21 +127,21 @@ const Cliente = () => {
                             <label>Tipo de pessoa</label>
 
                             <select
-                                name="tipo_pessoa"
+                                name="tipo_documento"
                                 className="Small"
-                                value={cliente.tipo_pessoa}
+                                value={cliente.tipo_documento}
                                 onChange={alterarTipoPessoa}
                             >
-                                <option value="fisica">Pessoa Física</option>
-                                <option value="juridica">Pessoa Jurídica</option>
-                                <option value="estrangeiro">Estrangeiro</option>
+                                <option value="f">Pessoa Física</option>
+                                <option value="j">Pessoa Jurídica</option>
+                                <option value="e">Estrangeiro</option>
                             </select>
                         </div>
 
                         <div className="FormItem">
                             <label>Documento</label>
 
-                            {cliente.tipo_pessoa === "fisica" && (
+                            {cliente.tipo_documento === "f" && (
                                 <InputMask
                                     mask="999.999.999-99"
                                     name="documento"
@@ -129,7 +152,7 @@ const Cliente = () => {
                                 />
                             )}
 
-                            {cliente.tipo_pessoa === "juridica" && (
+                            {cliente.tipo_documento === "j" && (
                                 <InputMask
                                     mask="99.999.999/9999-99"
                                     name="documento"
@@ -140,7 +163,7 @@ const Cliente = () => {
                                 />
                             )}
 
-                            {cliente.tipo_pessoa === "estrangeiro" && (
+                            {cliente.tipo_documento === "e" && (
                                 <input
                                     type="text"
                                     name="documento"
@@ -150,6 +173,22 @@ const Cliente = () => {
                                     onChange={handleChange}
                                 />
                             )}
+
+                        </div>
+
+                        <div className="FormItem">
+                            <label>Tipo de entrega</label>
+
+                            <select
+                                name="tipo_entrega"
+                                className="Small"
+                                value={cliente.tipo_entrega}
+                                onChange={handleChange}
+                            >
+                                <option value="E">Email</option>
+                                <option value="W">Whatsapp</option>
+                                <option value="I">Impresso</option>
+                            </select>
                         </div>
 
                         <div className="FormItem">
@@ -177,14 +216,19 @@ const Cliente = () => {
                                 onChange={handleChange}
                             />
                         </div>
+
                     </div>
+
                 </fieldset>
 
                 <fieldset className="Fieldset">
+
                     <legend>Dados Fiscais</legend>
 
                     <div className="FormGrid">
+
                         <div className="FormItem">
+
                             <label>Tributação</label>
 
                             <select
@@ -194,15 +238,22 @@ const Cliente = () => {
                                 onChange={handleChange}
                             >
                                 <option value="">Selecione</option>
-                                <option>Presumida</option>
-                                <option>Simples Nacional</option>
-                                <option>MEI</option>
-                                <option>CPF</option>
-                                <option>Lucro Real</option>
+
+                                {(tributacoes[cliente.tipo_documento] || []).map((item) => (
+                                    <option
+                                        key={item}
+                                        value={item}
+                                    >
+                                        {item}
+                                    </option>
+                                ))}
+
                             </select>
+
                         </div>
 
                         <div className="FormItem">
+
                             <label>Tipo Situação</label>
 
                             <select
@@ -212,18 +263,26 @@ const Cliente = () => {
                                 onChange={handleChange}
                             >
                                 <option value="">Selecione</option>
-                                <option>Pró-labore</option>
-                                <option>Funcionário</option>
-                                <option>Doméstica</option>
-                                <option>Sem movimento</option>
-                                <option>GPS avulso</option>
-                                <option>RPA</option>
+
+                                {(situacoes[cliente.tipo_documento] || []).map((item) => (
+                                    <option
+                                        key={item}
+                                        value={item}
+                                    >
+                                        {item}
+                                    </option>
+                                ))}
+
                             </select>
+
                         </div>
+
                     </div>
+
                 </fieldset>
 
                 <div className="Actions">
+
                     <button
                         type="button"
                         className="SecondaryButton"
@@ -238,6 +297,7 @@ const Cliente = () => {
                     >
                         Salvar
                     </button>
+
                 </div>
 
                 {errorMessage && (
@@ -251,7 +311,9 @@ const Cliente = () => {
                         {successMessage}
                     </p>
                 )}
+
             </div>
+
         </div>
     );
 };
