@@ -191,31 +191,6 @@ const Cliente = () => {
                             </select>
                         </div>
 
-                        <div className="FormItem">
-                            <label>E-mail</label>
-
-                            <input
-                                type="email"
-                                name="email"
-                                className="Small"
-                                placeholder="E-mail"
-                                value={cliente.email}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="FormItem">
-                            <label>Telefone</label>
-
-                            <input
-                                type="text"
-                                name="telefone"
-                                className="Small"
-                                placeholder="Telefone"
-                                value={cliente.telefone}
-                                onChange={handleChange}
-                            />
-                        </div>
 
                     </div>
 
@@ -279,6 +254,40 @@ const Cliente = () => {
 
                     </div>
 
+                </fieldset>
+
+                <fieldset className="Fieldset">
+
+                    <legend>Contatos do cliente</legend>
+
+                    <div className="FormGrid">
+
+                        <div className="FormItem">
+                            <label>E-mail</label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                className="Small"
+                                placeholder="E-mail"
+                                value={cliente.email}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="FormItem">
+                            <label>Telefone</label>
+
+                            <input
+                                type="text"
+                                name="telefone"
+                                className="Small"
+                                placeholder="Telefone"
+                                value={cliente.telefone}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
                 </fieldset>
 
                 <div className="Actions">
